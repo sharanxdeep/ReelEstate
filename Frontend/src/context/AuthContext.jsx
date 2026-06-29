@@ -28,8 +28,25 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('user')
     }
 
+    const registerUser = async (email, name, password, phone )=>{
+        const res = await fetch('http://localhost:3000/api/auth/register',{
+            method:'POST',
+            headers:{'Content-Type': 'application/json'},
+            body: JSON.stringify({email, name, password, phone}),
+            credentials: "include"
+        })
+
+        const data = await res.json()
+        if(res.ok){
+        setUser(data.user)
+        localStorage.setItem('user', JSON.stringify(data.user))
+        }
+
+        return data
+    }
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, registerUser }}>
             {children}
         </AuthContext.Provider>
     )

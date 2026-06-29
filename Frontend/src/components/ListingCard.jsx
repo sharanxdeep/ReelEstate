@@ -29,7 +29,7 @@ const ListingCard = ({ listing }) => {
 
   return (
     <div className='h-screen w-full relative snap-start bg-black flex items-center justify-center'>
-      <div className='relative h-full aspect-[9/16] max-h-screen overflow-hidden'>
+      <div className='relative h-full aspect-9/16 max-h-screen overflow-hidden'>
         <video
           ref={videoRef}
           src={listing.chapters?.[0]?.videoUrl}

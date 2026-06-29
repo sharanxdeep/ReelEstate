@@ -4,16 +4,20 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import Feed from './pages/Feed'
 import CreateListing from './pages/CreateListing'
+import Register from './pages/Register'
+import Navbar from './components/Navbar'
 
 
 const App = () => {
-  return (
+  return (   
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path='/' element={<Home />}/>
         <Route path='/login' element={<Login />}/>
         <Route path='/feed' element={<Feed />}/>
         <Route path='/create-listing' element={<CreateListing />}/>
+        <Route path='register-user' element={<Register />}/>
       </Routes>
     </BrowserRouter>
   )

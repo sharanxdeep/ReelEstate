@@ -15,7 +15,7 @@ const Login = () => {
         if (!data.user) {
             setError(data.message || data.Message)
         } else {
-            navigate('/')
+            navigate('/feed')
         }
     }
   return (
@@ -43,10 +43,17 @@ const Login = () => {
 
         <button
           onClick={handleLogin}
-          className="w-full bg-primary-900 text-white p-3 rounded font-bold"
+          className="w-full bg-primary-900 text-white p-3 rounded font-bold hover:bg-primary-800"
         >
           Login
         </button>
+
+        <p className="text-center text-sm text-primary-700 mt-4">
+          New user?{' '}
+          <span onClick={() => navigate('/register-user')} className="font-bold cursor-pointer text-primary-900">
+            Register here
+          </span>
+        </p>
       </div>
     </div>
   )
