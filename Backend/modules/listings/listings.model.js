@@ -80,7 +80,7 @@ const listingSchema = mongoose.Schema({
     status: {
         type : String,
         enum : ['draft', 'review', 'live', 'sold'],
-        default : 'draft'
+        default : 'live'
     },
 
     chapters: [
