@@ -7,6 +7,6 @@ router.post('/', verifyToken, createListing)
 router.get('/', getAllListings)
 router.get('/:id', getListing)
 router.delete('/:id', verifyToken, deleteListing)
-router.patch('/:id', verifyToken, updateListing)
+router.put('/:id', verifyToken, updateListing)
 
 module.exports = router

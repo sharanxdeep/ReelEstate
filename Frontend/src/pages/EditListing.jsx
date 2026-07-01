@@ -143,7 +143,7 @@ const EditListing = () => {
       const { chapters, ...rest } = formData;
 
       const res = await fetch(`http://localhost:3000/api/listings/${id}`, {
-        method: "patch",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ ...rest, chapters: updatedChapters }),

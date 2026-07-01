@@ -12,6 +12,7 @@ import Search from './pages/Search'
 import Profile from './pages/Profile'
 import EditProfile from './pages/EditProfile'
 import EditListing from './pages/EditListing'
+import Chat from './pages/Chat'
 
 
 const App = () => {
@@ -36,6 +37,9 @@ const App = () => {
         </ProtectedRoute>}/>
         <Route path='/edit-listing/:id' element={<ProtectedRoute>
           <EditListing />
+        </ProtectedRoute>}/>
+        <Route path='/chat' element={<ProtectedRoute>
+          <Chat />
         </ProtectedRoute>}/>
 
       </Routes>
