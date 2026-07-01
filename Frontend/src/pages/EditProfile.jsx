@@ -6,6 +6,16 @@ import AuthContext from '../context/AuthContext'
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+// Match to your real navbar heights.
+const NAVBAR_H_DESKTOP = 80
+const NAVBAR_H_MOBILE = 64
+const CONTENT_TOP = NAVBAR_H_DESKTOP + 32
+
+const inputBase =
+  "w-full bg-white/10 backdrop-blur-sm border border-white/15 text-white placeholder-white/45 rounded-4xl px-5 py-3.5 outline-none focus:border-[#C08A34]/70 focus:bg-white/15 transition-colors"
+
+const labelBase = "block text-[11px] font-semibold tracking-[0.12em] uppercase text-[#BDD8E9]/70 mb-2 ml-1"
+
 const EditProfile = () => {
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -74,7 +84,7 @@ const EditProfile = () => {
         const uploadData = new FormData()
         uploadData.append('file', avatar)
         uploadData.append('upload_preset', UPLOAD_PRESET)
-        
+
         const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
           method: 'POST',
           body: uploadData
@@ -82,7 +92,6 @@ const EditProfile = () => {
         const uploadResult = await uploadRes.json()
         avatarUrl = uploadResult.secure_url
       }
-
 
       const res = await fetch(`http://localhost:3000/api/auth/${user.id}`, {
         method: 'PATCH',
@@ -110,35 +119,47 @@ const EditProfile = () => {
     }
   }
 
-  if (loading) return <div className="flex items-center justify-center h-screen bg-black">Loading...</div>
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#001D39] text-[#BDD8E9]">
+        Loading…
+      </div>
+    )
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-20 md:pt-20 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
-        
-        {/* Header */}
-        <div className="bg-primary-900 text-white p-6 flex items-center gap-4">
-          <button
-            onClick={() => navigate('/profile')}
-            className="p-2 hover:bg-white/20 rounded-lg transition-all"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <h1 className="text-2xl font-bold">Edit Profile</h1>
-        </div>
+    <div className="min-h-screen bg-[#001D39]">
+      {/* Scrim so the translucent top navbar stays readable over the dark page */}
+      <div
+        className="hidden md:block fixed top-0 left-0 right-0 z-30 pointer-events-none"
+        style={{
+          height: NAVBAR_H_DESKTOP,
+          background: `linear-gradient(to bottom, rgba(0,29,57,0.65) 0%, rgba(0,29,57,0.55) 55%, rgba(0,29,57,0) 100%)`,
+        }}
+      />
 
-        {/* Form */}
-        <div className="p-8">
-          {/* Avatar Section */}
-          <div className="mb-8 text-center">
+      <div
+        className="max-w-2xl mx-auto px-5 md:px-8"
+        style={{ paddingTop: CONTENT_TOP, paddingBottom: NAVBAR_H_MOBILE + 96 }}
+      >
+
+        <p className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#C08A34] mb-2">
+          Account
+        </p>
+        <h1 className="font-display font-extrabold text-[32px] md:text-[40px] text-white leading-[1.1] mb-10">
+          Edit profile
+        </h1>
+
+        <div className="space-y-10">
+          {/* Avatar */}
+          <div className="flex flex-col items-center gap-4">
             <img
               src={avatarPreview}
               alt="Avatar"
-              className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-primary-900"
+              className="w-28 h-28 rounded-full object-cover border-4 border-white/20"
             />
-            <label className="inline-flex items-center gap-2 bg-primary-900 text-white px-6 py-2 rounded-lg hover:bg-primary-800 cursor-pointer transition-all font-bold">
-              <Upload size={18} />
-              Change Avatar
+            <label className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 text-white px-5 py-2.5 rounded-4xl hover:bg-white/15 cursor-pointer transition-colors text-sm font-medium">
+              <Upload size={16} />
+              Change avatar
               <input
                 type="file"
                 accept="image/*"
@@ -149,44 +170,46 @@ const EditProfile = () => {
           </div>
 
           {/* Form Fields */}
-          <div className="space-y-6">
+          <section className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-primary-900 mb-2">Full Name</label>
+              <label className={labelBase}>Full name</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full p-3 border-2 border-primary-200 rounded-lg focus:outline-none focus:border-primary-900 transition-all"
+                placeholder="Your full name"
+                className={inputBase}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-primary-900 mb-2">Phone Number</label>
+              <label className={labelBase}>Phone number</label>
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full p-3 border-2 border-primary-200 rounded-lg focus:outline-none focus:border-primary-900 transition-all"
+                placeholder="e.g. 98765 43210"
+                className={inputBase}
               />
             </div>
-          </div>
+          </section>
 
-          {/* Buttons */}
-          <div className="flex gap-4 mt-8">
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
             <button
               onClick={() => navigate('/profile')}
-              className="flex-1 px-6 py-3 border-2 border-primary-900 text-primary-900 rounded-lg font-bold hover:bg-primary-50 transition-all"
+              className="flex-1 py-3.5 rounded-4xl border border-white/20 text-white font-medium hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 px-6 py-3 bg-primary-900 text-white rounded-lg font-bold hover:bg-primary-800 transition-all disabled:opacity-50"
+              className="flex-1 py-3.5 rounded-4xl bg-[#C08A34] text-[#001D39] font-semibold hover:bg-[#D19B45] transition-colors disabled:opacity-50"
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? 'Saving…' : 'Save changes'}
             </button>
           </div>
         </div>
