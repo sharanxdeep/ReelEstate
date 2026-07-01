@@ -23,15 +23,18 @@ const getAllListings = async(req,res)=>{
     }
 }
 
-const getListing = async(req,res)=>{
-    try{
-        const listing = await listingModel.findById(req.params.id)
-        if (!listing) return res.status(404).json({message:"Listing not found"})
-        res.status(200).json({listing})
-    }
-    catch(error){
-        return res.status(500).json({message:error.message})
-    }
+const getListing = async (req, res) => {
+  try {
+    const listing = await listingModel.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+    if (!listing) return res.status(404).json({ message: "Listing not found" })
+    res.status(200).json({ listing })
+  } catch(error) {
+    return res.status(500).json({ message: error.message })
+  }
 }
 
 const deleteListing = async(req,res)=>{

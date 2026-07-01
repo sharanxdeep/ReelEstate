@@ -90,6 +90,8 @@ const listingSchema = mongoose.Schema({
             order: { type: Number, default: 0 }
         }
     ],
+
+    views: { type: Number, default: 0 }
 },
 {timeStamps : true})
 
