@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit2, LogOut, Heart, Home, Calendar, Check, X, Eye, Trash2 } from 'lucide-react'
+import {
+  Edit2,
+  LogOut,
+  Heart,
+  Home,
+  Calendar,
+  Check,
+  X,
+  Eye,
+  Trash2,
+} from "lucide-react";
 import AuthContext from "../context/AuthContext";
 
 const Profile = () => {
@@ -55,6 +65,39 @@ const Profile = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const handleDelete = async (e, listingId) => {
+    e.stopPropagation();
+
+    if (!window.confirm("Are you sure you want to delete this listing?")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/listings/${listingId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
+
+      if (res.ok) {
+        // Remove from state
+        setMyListings(
+          myListings.filter((listing) => listing._id !== listingId),
+        );
+        alert("Listing deleted successfully");
+      } else {
+        const data = await res.json();
+        alert("Error: " + (data.message || "Failed to delete"));
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      alert("Error deleting listing");
+    }
   };
 
   const getAvatarUrl = (name) => {
@@ -212,7 +255,7 @@ const Profile = () => {
           {activeTab === "listed" && (
             <div>
               {myListings && myListings.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
                   {myListings.map((prop, idx) => (
                     <div
                       key={idx}
@@ -227,7 +270,7 @@ const Profile = () => {
 
                         {/* Status Badge - Top Left */}
                         <span
-                          className={`absolute top-3 left-3 text-xs px-2.5 py-1.5 rounded font-bold z-10 ${
+                          className={`absolute top-2 left-2 text-[10px] px-1.5 py-0.5 rounded font-bold z-10 ${
                             prop.status === "live"
                               ? "bg-green-500 text-white"
                               : "bg-yellow-500 text-white"
@@ -236,36 +279,36 @@ const Profile = () => {
                           {prop.status.toUpperCase()}
                         </span>
 
-                        {/* Views Icon - Top Right */}
-                        <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-xs px-2.5 py-1.5 rounded border border-white/20 z-10">
-                          <Eye size={14} />
-                          <span>{prop.views || 0}</span>
+                        {/* Edit & Delete Buttons - Top Right */}
+                        <div className="absolute top-2 right-2 flex gap-1 z-20">
+                          <button
+                            onClick={(e) => handleEdit(e, prop._id)}
+                            className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded backdrop-blur-sm border border-white/20 transition-all"
+                          >
+                            <Edit2 size={12} />
+                          </button>
+                          <button
+                            onClick={(e) => handleDelete(e, prop._id)}
+                            className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded backdrop-blur-sm border border-white/20 transition-all"
+                          >
+                            <Trash2 size={12} />
+                          </button>
                         </div>
 
                         {/* Content Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 z-10">
-                          <p className="text-white text-sm font-bold line-clamp-2 mb-1">
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-2 z-10">
+                          <p className="text-white text-xs font-bold line-clamp-2 mb-0.5">
                             {prop.title}
                           </p>
-                          <p className="text-white/90 text-sm font-semibold">
+                          <p className="text-white/90 text-xs font-semibold">
                             ₹{(prop.price / 100000).toFixed(0)}L
                           </p>
                         </div>
 
-                        {/* Edit & Delete Buttons - Always visible, translucent */}
-                        <div className="absolute bottom-3 right-3 flex gap-2 z-20">
-                          <button
-                            onClick={(e) => handleEdit(e, prop._id)}
-                            className="bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-full backdrop-blur-sm border border-white/20 transition-all"
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                          <button
-                            onClick={(e) => handleDelete(e, prop._id)}
-                            className="bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-full backdrop-blur-sm border border-white/20 transition-all"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                        {/* Views Text - Bottom Right */}
+                        <div className="absolute bottom-2 right-2 text-white text-[10px] z-10 flex items-center gap-0.5">
+                          <Eye size={10} />
+                          <span>{prop.views || 0}</span>
                         </div>
                       </div>
                     </div>
