@@ -1,10 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const { register, login, getUser} = require('./auth.controller')
+const { register, login, getUser, updateProfile, toggleSaveListing} = require('./auth.controller')
+const verifyToken = require('../../middleware/auth.middleware')
 
 router.post('/register', register)
 router.post('/login', login)
 router.get('/:id', getUser)
+router.patch('/:id',verifyToken, updateProfile)
+router.patch('/save/:listingId', verifyToken, toggleSaveListing)
 
 router.get('/:id', async (req, res) => {
   try {

@@ -10,6 +10,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import ListingDetail from './pages/ListingDetail'
 import Search from './pages/Search'
 import Profile from './pages/Profile'
+import EditProfile from './pages/EditProfile'
+import EditListing from './pages/EditListing'
 
 
 const App = () => {
@@ -28,6 +30,12 @@ const App = () => {
         <Route path='/search' element={<Search />}/>
         <Route path='/profile' element={<ProtectedRoute>
           <Profile />
+        </ProtectedRoute>}/>
+        <Route path='/edit-profile' element={<ProtectedRoute>
+          <EditProfile />
+        </ProtectedRoute>}/>
+        <Route path='/edit-listing/:id' element={<ProtectedRoute>
+          <EditListing />
         </ProtectedRoute>}/>
 
       </Routes>

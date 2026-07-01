@@ -14,13 +14,14 @@ import {
 import AuthContext from "../context/AuthContext";
 
 const Profile = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, toggleSaveListing } = useContext(AuthContext);
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [savedListings, setSavedListings] = useState([]);
   const [myListings, setMyListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("saved");
+
 
   useEffect(() => {
     if (!user) {
@@ -51,6 +52,9 @@ const Profile = () => {
           (listing) => listing.seller === user.id,
         );
         setMyListings(userListings);
+        if (userListings.length > 0) {
+          setActiveTab("listed");
+        }
       } catch (error) {
         console.error("Error fetching listings:", error);
       } finally {
@@ -65,6 +69,11 @@ const Profile = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const handleEdit = (e, listingId) => {
+    e.stopPropagation();
+    navigate(`/edit-listing/${listingId}`);
   };
 
   const handleDelete = async (e, listingId) => {
@@ -97,6 +106,16 @@ const Profile = () => {
     } catch (error) {
       console.error("Error deleting listing:", error);
       alert("Error deleting listing");
+    }
+  };
+
+  const handleRemoveSaved = async (e, listingId) => {
+    e.stopPropagation();
+    try {
+      await toggleSaveListing(listingId);
+      setSavedListings((prev) => prev.filter((prop) => prop._id !== listingId));
+    } catch (error) {
+      console.error("Error removing saved listing:", error);
     }
   };
 
@@ -218,26 +237,38 @@ const Profile = () => {
           {activeTab === "saved" && (
             <div>
               {savedListings && savedListings.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
                   {savedListings.map((prop, idx) => (
                     <div
                       key={idx}
                       onClick={() => navigate(`/listing/${prop._id}`)}
-                      className="bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
+                      className="relative rounded-lg overflow-hidden cursor-pointer group"
                     >
-                      <div className="w-full aspect-9/16 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center overflow-hidden">
+                      <div className="w-full aspect-9/16 bg-gray-200 relative">
                         <video
                           src={prop.chapters?.[0]?.videoUrl}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                         />
-                      </div>
-                      <div className="p-3">
-                        <p className="font-bold text-primary-900 text-sm line-clamp-2">
-                          {prop.title}
-                        </p>
-                        <p className="text-primary-800 font-semibold text-sm">
-                          ₹{prop.price?.toLocaleString()}
-                        </p>
+
+                        {/* Remove Button - Top Right */}
+                        <div className="absolute top-2 right-2 z-20">
+                          <button
+                            onClick={(e) => handleRemoveSaved(e, prop._id)}
+                            className="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded backdrop-blur-sm border border-white/20 transition-all"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+
+                        {/* Content Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-2 z-10">
+                          <p className="text-white text-xs font-bold line-clamp-2 mb-0.5">
+                            {prop.title}
+                          </p>
+                          <p className="text-white/90 text-xs font-semibold">
+                            ₹{(prop.price / 100000).toFixed(0)}L
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}

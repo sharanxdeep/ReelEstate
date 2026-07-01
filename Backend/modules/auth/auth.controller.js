@@ -76,7 +76,8 @@ const login = async (req, res) => {
         id : validUser._id,
         name : validUser.name,
         email : validUser.email,
-        role : validUser.role
+        role : validUser.role,
+        savedProperties : validUser.savedProperties
       }
     });
   } catch (error) {
@@ -86,7 +87,7 @@ const login = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await userModel.findById(req.params.id)
+    const user = await userModel.findById(req.params.id).populate('savedProperties')
     if (!user) return res.status(404).json({ message: "User not found" })
     res.status(200).json({ user })
   } catch (error) {
@@ -94,4 +95,45 @@ const getUser = async (req, res) => {
   }
 }
 
-module.exports = { register, login, getUser }
+const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, avatar } = req.body
+    const user = await userModel.findByIdAndUpdate(
+      req.user._id,
+      { name, phone, avatar },
+      { new: true }
+    )
+    res.status(200).json({ user })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+const toggleSaveListing = async (req, res) => {
+  try {
+    const userDoc = await userModel.findById(req.user._id)
+    if (!userDoc) return res.status(404).json({ message: "User not found" })
+
+    const { listingId } = req.params
+    const alreadySaved = userDoc.savedProperties.some(
+      (id) => id.toString() === listingId
+    )
+
+    if (alreadySaved) {
+      userDoc.savedProperties.pull(listingId)
+    } else {
+      userDoc.savedProperties.push(listingId)
+    }
+    await userDoc.save()
+
+    res.status(200).json({
+      saved: !alreadySaved,
+      savedProperties: userDoc.savedProperties,
+    })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+
+module.exports = { register, login, getUser, updateProfile, toggleSaveListing }
