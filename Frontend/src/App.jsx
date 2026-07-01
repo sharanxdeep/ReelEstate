@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import ListingDetail from './pages/ListingDetail'
 import Search from './pages/Search'
+import Profile from './pages/Profile'
 
 
 const App = () => {
@@ -25,6 +26,10 @@ const App = () => {
         <Route path='/register-user' element={<Register />}/>
         <Route path="/listing/:id" element={<ListingDetail />} />
         <Route path='/search' element={<Search />}/>
+        <Route path='/profile' element={<ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>}/>
+
       </Routes>
     </BrowserRouter>
   )
