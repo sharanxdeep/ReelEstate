@@ -27,7 +27,7 @@ const Navbar = () => {
       {/* Desktop — top navbar */}
       <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between px-8 py-4 bg-white/10 backdrop-blur-md border-b border-white/20">
         <span
-          onClick={() => navigate("/feed")}
+          onClick={() => navigate("/")}
           className="text-xl font-bold text-white cursor-pointer tracking-wide"
         >
           ReelEstate

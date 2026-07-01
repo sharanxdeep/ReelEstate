@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import Footer from "../components/Footer";
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
@@ -273,6 +274,7 @@ const CreateListing = () => {
           </button>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

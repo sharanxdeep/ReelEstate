@@ -10,16 +10,3 @@
   --color-primary-300: #BDD8E9;
 }
 
-.react-international-phone-input-container {
-  display: flex;
-  align-items: stretch;
-}
-
-.react-international-phone-input {
-  padding: 0.75rem !important;
-  flex: 1;
-}
-
-.react-international-phone-country-selector-button {
-  padding: 0.75rem !important;
-}
